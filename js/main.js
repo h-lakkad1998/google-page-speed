@@ -318,6 +318,25 @@ Version:	1.1
 		// 	}
 		
 		// });
+		
+		// lazy loading bg images in html doc - it should be placed in the end
+		var lazyBackgrounds = [].slice.call(document.querySelectorAll("[data-lazy-style]"));
+		if ("IntersectionObserver" in window) {
+			let lazyBackgroundObserver = new IntersectionObserver(function(entries, observer) {
+				entries.forEach(function(entry) {
+					if (entry.isIntersecting) {
+						let lazy_img_ele = entry.target;
+						lazy_img_ele.style = lazy_img_ele.dataset.lazyStyle;
+						delete lazy_img_ele.dataset.lazyStyle;
+						lazyBackgroundObserver.unobserve(lazy_img_ele);
+					}
+				});
+			});
+
+			lazyBackgrounds.forEach(function(lazyBackground) {
+				lazyBackgroundObserver.observe(lazyBackground);
+			});
+		}
 	});
 	
 	/*====================
